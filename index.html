@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#17191c">
+<title>Daily Routine — Better Me</title>
+<style>
+:root{--bg:#f4f1eb;--card:#fffdf9;--ink:#202329;--muted:#777b83;--line:#e7e2d9;--accent:#273b57;--accent2:#d8b982;--green:#34745c;--soft:#edf4ef}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
+button,input{font:inherit}
+.app{max-width:760px;margin:auto;padding:20px 16px calc(32px + env(safe-area-inset-bottom))}
+header{background:linear-gradient(135deg,#20242b,#35445a);color:white;border-radius:24px;padding:24px 22px;margin-bottom:16px;position:relative;overflow:hidden}
+header:after{content:"";position:absolute;width:170px;height:170px;border:1px solid #ffffff20;border-radius:50%;right:-45px;top:-65px;box-shadow:0 0 0 22px #ffffff08,0 0 0 44px #ffffff05}
+.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:#d9c39d;font-weight:700}
+h1{font-size:clamp(1.65rem,6vw,2.25rem);line-height:1.1;margin:8px 0}
+header p{margin:9px 0 0;color:#e1e5eb;font-size:.95rem;max-width:420px}
+.date{margin-top:18px;color:#d9c39d;font-size:.88rem;font-weight:600}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.stat small{color:var(--muted);display:block;font-size:.8rem}
+.stat strong{font-size:1.55rem;display:block;margin-top:3px}
+.progress-wrap{height:8px;background:#e8e4dc;border-radius:99px;overflow:hidden;margin-top:10px}
+.progress-bar{height:100%;width:0;background:var(--green);border-radius:99px;transition:width .25s}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 2px 10px}
+h2{font-size:1.08rem;margin:0}
+.muted{color:var(--muted);font-size:.82rem}
+.task-list{display:flex;flex-direction:column;gap:10px}
+.task{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;transition:opacity .2s,border-color .2s}
+.task.done{background:var(--soft);border-color:#c9dfd1}
+.check{width:34px;height:34px;border-radius:11px;border:2px solid #c9c5bd;background:transparent;color:white;display:grid;place-items:center;cursor:pointer;font-size:1.15rem}
+.task.done .check{background:var(--green);border-color:var(--green)}
+.task-title{font-weight:700;font-size:.96rem}
+.task-time{font-size:.79rem;color:var(--muted);margin-top:3px}
+.task.done .task-title{text-decoration:line-through;color:#61756a}
+.tag{font-size:.72rem;padding:5px 8px;border-radius:99px;background:#f0ece4;color:#666;white-space:nowrap}
+.task.done .tag{background:#dcebe1;color:#2c674f}
+.side{display:flex;align-items:center;gap:8px}
+.del{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:transparent;color:#a44848;cursor:pointer;font-size:1rem;line-height:1;display:grid;place-items:center;padding:0}
+.del:hover{background:#f7eaea}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:11px 14px;border-radius:12px;font-weight:650;cursor:pointer}
+.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
+.btn.danger{color:#a44848}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:16px}
+.panel h2{margin-bottom:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--muted)}
+.field input{width:100%;min-width:0;border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff;color:var(--ink)}
+.field.full{grid-column:1/-1}
+.add-btn{width:100%;margin-top:10px}
+.note{font-size:.8rem;color:var(--muted);margin:14px 2px 0}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#20242b;color:white;padding:10px 15px;border-radius:99px;font-size:.85rem;box-shadow:0 6px 25px #0002;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap}
+.toast.show{opacity:1}
+footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}
+@media(min-width:600px){.app{padding:28px 22px 40px}.task{padding:16px}.summary{grid-template-columns:1fr 1fr}}
+@media(max-width:390px){.app{padding:12px 11px 28px}.task{grid-template-columns:38px minmax(0,1fr);gap:9px;padding:12px}.side{grid-column:2;justify-self:start}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.stat{padding:13px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <div class="eyebrow">My Vision Board · 2026–2028</div>
+    <h1>Daily Routine</h1>
+    <p>ทำทีละอย่าง ไม่ต้องสมบูรณ์แบบ แค่ค่อย ๆ ดีขึ้นในทุกวัน</p>
+    <div class="date" id="todayLabel"></div>
+  </header>
+
+  <section class="summary" aria-label="สรุปความคืบหน้า">
+    <div class="stat"><small>ทำสำเร็จแล้ว</small><strong id="countLabel">0 / 6</strong><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></div>
+    <div class="stat"><small>ความคืบหน้าวันนี้</small><strong id="percentLabel">0%</strong><small id="encourage">เริ่มจากงานแรกได้เลย 🌱</small></div>
+  </section>
+
+  <div class="section-head"><h2>เช็กลิสต์วันนี้</h2><span class="muted">แตะช่อง ✓ เมื่อเสร็จ</span></div>
+  <section class="task-list" id="taskList"></section>
+
+  <div class="actions">
+    <button class="btn" id="uncheckAll">ยกเลิกเครื่องหมายทั้งหมด</button>
+    <button class="btn" id="resetDay">เริ่มวันใหม่</button>
+  </div>
+
+  <section class="panel">
+    <h2>＋ เพิ่มกิจวัตรของตัวเอง</h2>
+    <form id="addForm">
+      <div class="form-grid">
+        <label class="field full">ชื่อกิจกรรม
+          <input id="taskName" required maxlength="70" placeholder="เช่น อ่านหนังสือ 10 หน้า">
+        </label>
+        <label class="field">เวลาเริ่ม
+          <input id="taskStart" type="time" value="18:00" required>
+        </label>
+        <label class="field">เวลาสิ้นสุด
+          <input id="taskEnd" type="time" value="18:30" required>
+        </label>
+      </div>
+      <button class="btn primary add-btn" type="submit">เพิ่มกิจวัตร</button>
+    </form>
+  </section>
+
+  <p class="note">ข้อมูลจะถูกบันทึกไว้ในเบราว์เซอร์ของอุปกรณ์นี้โดยอัตโนมัติ หากเปิดในมือถือเครื่องอื่น ข้อมูลจะไม่ซิงก์กันโดยอัตโนมัติ</p>
+  <footer>“Consistency over motivation.” · Keep showing up for yourself.</footer>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const STORAGE_KEY = "betterMeRoutine_v1";
+const DEFAULT_TASKS = [
+  {id:"wake",name:"ตื่นนอนและเตรียมตัว",start:"06:00",end:"07:00",done:false},
+  {id:"study",name:"เรียน / ทำงานที่สำคัญ",start:"08:00",end:"12:00",done:false},
+  {id:"health",name:"พักและขยับร่างกาย",start:"12:00",end:"13:00",done:false},
+  {id:"practice",name:"เรียน / ฝึกทักษะ",start:"13:00",end:"17:00",done:false},
+  {id:"review",name:"ทบทวนบทเรียนหรืออ่านหนังสือ",start:"19:00",end:"21:00",done:false},
+  {id:"sleep",name:"ผ่อนคลายและเตรียมตัวนอน",start:"22:30",end:"23:00",done:false}
+];
+const $ = id => document.getElementById(id);
+let currentDay = localDateKey();
+let tasks = loadState();
+function localDateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function loadState(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(saved && saved.day===currentDay && Array.isArray(saved.tasks)) return saved.tasks;
+    if(saved && Array.isArray(saved.tasks)) return saved.tasks.map(t=>({...t,done:false}));
+  }catch(e){}
+  return DEFAULT_TASKS.map(t=>({...t}));
+}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify({day:currentDay,tasks}));}
+function showToast(message){const el=$("toast");el.textContent=message;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1900)}
+function prettyDate(){return new Intl.DateTimeFormat("th-TH",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date())}
+function render(){
+  $("todayLabel").textContent=prettyDate();
+  const list=$("taskList");list.innerHTML="";
+  tasks.sort((a,b)=>a.start.localeCompare(b.start));
+  tasks.forEach(task=>{
+    const item=document.createElement("article");
+    item.className="task"+(task.done?" done":"");
+    const check=document.createElement("button");
+    check.className="check";check.type="button";check.setAttribute("aria-label",(task.done?"ทำเครื่องหมายว่ายังไม่เสร็จ: ":"ทำเสร็จแล้ว: ")+task.name);check.textContent=task.done?"✓":"";
+    check.addEventListener("click",()=>{task.done=!task.done;save();render();if(task.done)showToast("เยี่ยมเลย! ทำสำเร็จอีกหนึ่งอย่าง ✨")});
+    const info=document.createElement("div");
+    const title=document.createElement("div");title.className="task-title";title.textContent=task.name;
+    const time=document.createElement("div");time.className="task-time";time.textContent=`${task.start} – ${task.end}`;
+    info.append(title,time);
+    const tag=document.createElement("span");tag.className="tag";tag.textContent=task.done?"เสร็จแล้ว ✓":"ยังไม่ได้ทำ";
+    const del=document.createElement("button");del.className="del";del.type="button";del.textContent="🗑";del.setAttribute("aria-label","ลบกิจวัตร: "+task.name);
+    del.addEventListener("click",()=>{
+      if(!confirm("ลบกิจวัตร \""+task.name+"\" ใช่ไหม?"))return;
+      tasks=tasks.filter(t=>t.id!==task.id);save();render();showToast("ลบกิจวัตรแล้ว");
+    });
+    const side=document.createElement("div");side.className="side";side.append(tag,del);
+    item.append(check,info,side);list.append(item);
+  });
+  const completed=tasks.filter(t=>t.done).length;
+  const pct=tasks.length?Math.round(completed/tasks.length*100):0;
+  $("countLabel").textContent=`${completed} / ${tasks.length}`;
+  $("percentLabel").textContent=pct+"%";
+  $("progressBar").style.width=pct+"%";
+  $("encourage").textContent=pct===100?"วันนี้คุณทำได้ครบแล้ว 🎉":pct>=60?"ดีมาก ใกล้ครบแล้ว 💪":pct>0?"ทำต่อทีละอย่างนะ 🌿":"เริ่มจากงานแรกได้เลย 🌱";
+}
+$("addForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=$("taskName").value.trim(),start=$("taskStart").value,end=$("taskEnd").value;
+  if(!name)return;
+  if(end<start){showToast("เวลาสิ้นสุดควรอยู่หลังเวลาเริ่ม");return}
+  tasks.push({id:"custom-"+Date.now(),name,start,end,done:false});
+  save();render();e.target.reset();$("taskStart").value="18:00";$("taskEnd").value="18:30";showToast("เพิ่มกิจวัตรแล้ว");
+});
+$("uncheckAll").addEventListener("click",()=>{tasks=tasks.map(t=>({...t,done:false}));save();render();showToast("ยกเลิกเครื่องหมายทั้งหมดแล้ว")});
+$("resetDay").addEventListener("click",()=>{
+  if(!confirm("เริ่มวันใหม่และยกเลิกเครื่องหมายที่ทำเสร็จแล้วทั้งหมดใช่ไหม?"))return;
+  tasks=tasks.map(t=>({...t,done:false}));currentDay=localDateKey();save();render();showToast("พร้อมเริ่มต้นใหม่แล้ว 🌱");
+});
+render();
+</script>
+</body>
+</html>
